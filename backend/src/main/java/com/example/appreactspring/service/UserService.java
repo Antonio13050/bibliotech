@@ -2,6 +2,7 @@ package com.example.appreactspring.service;
 
 import com.example.appreactspring.model.Role;
 import com.example.appreactspring.model.User;
+import com.example.appreactspring.model.transport.UserResponseDTO;
 import com.example.appreactspring.model.transport.operation.create.CreateUserForm;
 import com.example.appreactspring.repository.RoleRepository;
 import com.example.appreactspring.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -30,7 +32,7 @@ public class UserService {
     }
 
     @Transactional
-    public User create(CreateUserForm form){
+    public UserResponseDTO create(CreateUserForm form){
 
         Role basicRole = this.roleRepository.findByName(Role.Values.BASIC.name());
 
@@ -47,10 +49,11 @@ public class UserService {
         user.setRoles(Set.of(basicRole));
 
         this.userRepository.save(user);
-        return user;
+        return new UserResponseDTO(user);
     }
 
-    public List<User> listUsers(){
-        return this.userRepository.findAll();
+    public List<UserResponseDTO> listUsers(){
+        return this.userRepository.findAll()
+                .stream().map(UserResponseDTO::new).collect(Collectors.toList());
     }
 }

@@ -1,6 +1,7 @@
 package com.example.appreactspring.controller;
 
 import com.example.appreactspring.model.User;
+import com.example.appreactspring.model.transport.UserResponseDTO;
 import com.example.appreactspring.model.transport.operation.create.CreateUserForm;
 import com.example.appreactspring.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +22,15 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody CreateUserForm body, UriComponentsBuilder uriComponentsBuilder){
-        User response = this.userService.create(body);
-        return ResponseEntity.created(uriComponentsBuilder.path("user/{id}").buildAndExpand(response.getUserId()).toUri()).body(response);
+    public ResponseEntity<UserResponseDTO> create(@RequestBody CreateUserForm body, UriComponentsBuilder uriComponentsBuilder){
+        UserResponseDTO response = this.userService.create(body);
+        return ResponseEntity.created(uriComponentsBuilder.path("user/{id}").buildAndExpand(response.id()).toUri()).body(response);
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<List<User>> listUsers(){
-        List<User> response = this.userService.listUsers();
+    public ResponseEntity<List<UserResponseDTO>> listUsers(){
+        List<UserResponseDTO> response = this.userService.listUsers();
         return ResponseEntity.ok(response);
     }
 
