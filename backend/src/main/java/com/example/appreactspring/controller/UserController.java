@@ -1,5 +1,6 @@
 package com.example.appreactspring.controller;
 
+import com.example.appreactspring.exception.UserAlreadyExistsException;
 import com.example.appreactspring.model.User;
 import com.example.appreactspring.model.transport.UserResponseDTO;
 import com.example.appreactspring.model.transport.operation.create.CreateUserForm;
@@ -23,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody CreateUserForm body, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity<UserResponseDTO> create(@RequestBody CreateUserForm body, UriComponentsBuilder uriComponentsBuilder) throws UserAlreadyExistsException {
         UserResponseDTO response = this.userService.create(body);
         return ResponseEntity.created(uriComponentsBuilder.path("user/{id}").buildAndExpand(response.id()).toUri()).body(response);
     }

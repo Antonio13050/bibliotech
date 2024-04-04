@@ -1,5 +1,6 @@
 package com.example.appreactspring.service;
 
+import com.example.appreactspring.exception.UserAlreadyExistsException;
 import com.example.appreactspring.model.Role;
 import com.example.appreactspring.model.User;
 import com.example.appreactspring.model.transport.UserResponseDTO;
@@ -32,15 +33,12 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO create(CreateUserForm form){
+    public UserResponseDTO create(CreateUserForm form) throws UserAlreadyExistsException {
 
         Role basicRole = this.roleRepository.findByName(Role.Values.BASIC.name());
 
-        Optional<User> userFromDb = this.userRepository.findByUsername(form.username());
-
-        if (userFromDb.isPresent()){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        validateUniqueUsername(form.username());
+        validateUniqueEmail(form.email());
 
         var user = new User();
         user.setUsername(form.username());
@@ -55,5 +53,23 @@ public class UserService {
     public List<UserResponseDTO> listUsers(){
         return this.userRepository.findAll()
                 .stream().map(UserResponseDTO::new).collect(Collectors.toList());
+    }
+
+    private void validateUniqueUsername(String username) throws UserAlreadyExistsException {
+
+        Optional<User> userFromUsername = this.userRepository.findByUsername(username);
+
+        if (userFromUsername.isPresent()) {
+            throw new UserAlreadyExistsException("User with username: " + username + ", already exists: " );
+        }
+    }
+
+    private void validateUniqueEmail(String email) throws UserAlreadyExistsException {
+
+        Optional<User> userFromEmail = this.userRepository.findByEmail(email);
+
+        if (userFromEmail.isPresent()) {
+            throw new UserAlreadyExistsException("User with email: " + email + ", already exists: " );
+        }
     }
 }
