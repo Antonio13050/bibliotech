@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "../../service/ApiFunctions";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const NewUserRegistrationSchema = z.object({
     username: z.string().min(1, "Nome é obrigatório"),
@@ -40,22 +42,13 @@ export default function SignUp() {
         resolver: zodResolver(NewUserRegistrationSchema),
     });
 
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-
     const onSubmit = async (data) => {
         try {
             const result = await registerUser(data);
-            setSuccessMessage(result);
-            setErrorMessage("");
+            toast.success("User created!");
         } catch (error) {
-            setSuccessMessage("");
-            setErrorMessage(`Registration error : ${error.message}`);
+            toast.error(`Registration error : ${error}`);
         }
-        setTimeout(() => {
-            setErrorMessage("");
-            setSuccessMessage("");
-        }, 5000);
     };
 
     return (
@@ -81,6 +74,7 @@ export default function SignUp() {
                     Cadastrar
                 </button>
             </form>
+            <ToastContainer />
         </div>
     );
 }

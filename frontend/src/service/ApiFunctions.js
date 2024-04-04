@@ -23,8 +23,8 @@ export async function registerUser(registration) {
         const response = await api.post("/users", registration);
         return response.data;
     } catch (error) {
-        if (error.reeponse && error.response.data) {
-            throw new Error(error.response.data);
+        if (error.response && error.response.data) {
+            throw new Error(error.response.data.detail);
         } else {
             throw new Error(`User registration error : ${error.message}`);
         }

@@ -22,7 +22,7 @@ export default function SignIn() {
 
     const [errorMessage, setErrorMessage] = useState("");
 
-    const auth = useAuth();
+    const { handleLogin } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const redirectUrl = location.state?.path || "/";
@@ -30,8 +30,9 @@ export default function SignIn() {
     const onSubmit = async (data) => {
         const success = await loginUser(data);
         if (success) {
-            const token = success.token;
-            auth.handleLogin(token);
+            const token = success.accessToken;
+            console.log(token);
+            handleLogin(token);
             navigate(redirectUrl, { replace: true });
         } else {
             setErrorMessage("Invalid username or password. Please try again.");
