@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173/", maxAge = 3600)
 @RequestMapping("/users")
 @RestController
 public class UserController {

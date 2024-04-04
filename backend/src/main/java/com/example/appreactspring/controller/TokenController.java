@@ -4,10 +4,12 @@ import com.example.appreactspring.model.transport.LoginRequest;
 import com.example.appreactspring.model.transport.LoginResponse;
 import com.example.appreactspring.service.TokenService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin(origins = "http://localhost:5173/", maxAge = 3600)
 @RestController
 public class TokenController {
 
