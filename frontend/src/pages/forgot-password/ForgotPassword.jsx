@@ -18,20 +18,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/password-input";
 
-const formLoginSchema = z.object({
+const formForgotPasswordSchema = z.object({
     email: z
         .string()
         .min(1, { message: "Digite o e-mail" })
         .email({ message: "E-mail inválido" }),
-    password: z.string().min(1, "Digite a senha"),
 });
 
-export default function SignIn() {
+export default function ForgotPassword() {
     const form = useForm({
-        resolver: zodResolver(formLoginSchema),
+        resolver: zodResolver(formForgotPasswordSchema),
         defaultValues: {
             email: "",
-            password: "",
         },
     });
 
@@ -42,37 +40,21 @@ export default function SignIn() {
     const location = useLocation();
     const redirectUrl = location.state?.path || "/";
 
-    useEffect(() => {
-        if (localStorage.getItem("userId")) {
-            navigate("/", { replace: true });
-        }
-    }, []);
-
     const onSubmit = async (data) => {
-        const success = await loginUser(data);
-        if (success) {
-            const token = success.accessToken;
-            handleLogin(token);
-            navigate(redirectUrl, { replace: true });
-        } else {
-            setErrorMessage("Invalid username or password. Please try again.");
-        }
-        setTimeout(() => {
-            setErrorMessage("");
-        }, 3000);
+        console.log("recuperar senha");
     };
 
     return (
         <div className="h-screen w-screen">
             <div className="container h-screen w-screen mx-auto flex flex-col items-center justify-center">
-                <div className="form-container border-2 p-8 rounded-lg lg:w-4/12 w-[366px]">
+                <div className="form-container border-2 p-8 rounded-lg lg:w-4/12">
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}
                             className="space-y-8"
                         >
                             <h1 className="text-3xl font-bold text-center">
-                                Login
+                                Recuperação de senha
                             </h1>
                             <FormField
                                 control={form.control}
@@ -90,23 +72,6 @@ export default function SignIn() {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Password</FormLabel>
-                                        <FormControl>
-                                            <PasswordInput
-                                                id="current_password"
-                                                placeholder="Digite sua senha"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
                             <div className="text-center">
                                 {errorMessage && (
                                     <FormMessage>{errorMessage}</FormMessage>
@@ -115,18 +80,15 @@ export default function SignIn() {
 
                             <div className="flex justify-center w-full">
                                 <Button type="submit" className="sm:w-4/12">
-                                    Entrar
+                                    Continuar
                                 </Button>
                             </div>
                         </form>
                     </Form>
 
                     <p className="text-center py-4">
-                        <Link
-                            to={"/forgot-password"}
-                            className="hover:underline"
-                        >
-                            Esqueceu a senha?
+                        <Link to={"/login"} className="hover:underline">
+                            Voltar para o login
                         </Link>
                     </p>
 

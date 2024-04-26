@@ -1,13 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Header from "./Header";
-import SideBar from "./SideBar";
+import Header from "../header/Header";
 
 export default function Layout() {
     return (
-        <div className="grid-container">
+        <div>
             <Header />
-            <SideBar />
             <Outlet />
         </div>
     );

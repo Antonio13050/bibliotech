@@ -13,7 +13,6 @@ export async function loginUser(login) {
             return null;
         }
     } catch (error) {
-        console.error(error);
         return null;
     }
 }
@@ -21,7 +20,7 @@ export async function loginUser(login) {
 export async function registerUser(registration) {
     try {
         const response = await api.post("/users", registration);
-        return response.data;
+        return response;
     } catch (error) {
         if (error.response && error.response.data) {
             throw new Error(error.response.data.detail);
