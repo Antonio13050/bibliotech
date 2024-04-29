@@ -5,6 +5,7 @@ import com.example.appreactspring.model.User;
 import com.example.appreactspring.model.transport.UserResponseDTO;
 import com.example.appreactspring.model.transport.operation.create.CreateUserForm;
 import com.example.appreactspring.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,26 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173/", maxAge = 3600)
+    @RequestMapping(value = "/check-email/{email}", method = RequestMethod.HEAD)
+    public ResponseEntity<Void> checkEmailExists(@PathVariable String email) {
+        try {
+            userService.validateUniqueEmail(email);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (UserAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
 
+    @CrossOrigin(origins = "http://localhost:5173/", maxAge = 3600)
+    @RequestMapping(value = "/check-username/{username}", method = RequestMethod.HEAD)
+    public ResponseEntity<Void> checkUsernameExists(@PathVariable String username) {
+        try {
+            userService.validateUniqueUsername(username);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (UserAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
 
 }

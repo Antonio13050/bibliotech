@@ -8,10 +8,8 @@ import com.example.appreactspring.model.transport.operation.create.CreateUserFor
 import com.example.appreactspring.repository.RoleRepository;
 import com.example.appreactspring.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +53,7 @@ public class UserService {
                 .stream().map(UserResponseDTO::new).collect(Collectors.toList());
     }
 
-    private void validateUniqueUsername(String username) throws UserAlreadyExistsException {
+    public void validateUniqueUsername(String username) throws UserAlreadyExistsException {
 
         Optional<User> userFromUsername = this.userRepository.findByUsername(username);
 
@@ -64,7 +62,7 @@ public class UserService {
         }
     }
 
-    private void validateUniqueEmail(String email) throws UserAlreadyExistsException {
+    public void validateUniqueEmail(String email) throws UserAlreadyExistsException {
 
         Optional<User> userFromEmail = this.userRepository.findByEmail(email);
 

@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerUser } from "../../service/ApiFunctions";
+import {
+    registerUser,
+    verifyEmailAlreadyExists,
+    verifyUsernameAlreadyExists,
+} from "../../service/ApiFunctions";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -19,17 +23,26 @@ import { PasswordInput } from "@/components/password-input";
 import { Link, useNavigate } from "react-router-dom";
 
 const NewUserRegistrationSchema = z.object({
-    username: z.string().min(1, "Usuário é obrigatório"),
-    email: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),
-    // .superRefine((value, ctx) => {
-    //     const userExists = users.find((user) => user.email === value);
-    //     if (userExists) {
-    //         return ctx.addIssue({
-    //             code: "custom",
-    //             message: "E-mail já cadastrado",
-    //         });
-    //     }
-    // }),
+    username: z
+        .string()
+        .min(1, "Usuário é obrigatório")
+        .refine(
+            async (username) => {
+                return verifyUsernameAlreadyExists(username);
+            },
+            { message: "Usuário já existe" }
+        ),
+    email: z
+        .string()
+        .min(1, "E-mail é obrigatório")
+        .email("E-mail inválido")
+        .refine(
+            async (email) => {
+                return verifyEmailAlreadyExists(email);
+            },
+            { message: "E-mail já existe" }
+        ),
+
     password: z
         .string()
         .min(1, "Senha é obrigatório")
@@ -61,7 +74,6 @@ export default function SignUp() {
     const onSubmit = async (data) => {
         try {
             const result = await registerUser(data);
-            console.log(result);
             toast("Usuário criado com sucesso", {
                 description: `Bem vindo ${result.data.username}!`,
                 position: "top-right",
