@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    networks:
+      - private
+    mem_limit: "512m"
+    cpus: "0.25" 
+  
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+        - "8080:8080"
+    depends_on:
+        - postgres
+    networks:
+        - public
+        - private
+    mem_limit: "512m"
+    cpus: "0.5"
+
+  api-notification:
+    build: ./api-notification
+    container_name: api-notification
+    ports:
+        - "8081:8081"
+    depends_on:
+        - postgres
+        - backend
+    networks:
+        - public
+        - private
+    mem_limit: "512m"
+    cpus: "0.5"  
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password 
+    networks:
+      - private
+    mem_limit: "512m"
+    cpus: "0.25"
+
+networks:
+  public:
+  private:
