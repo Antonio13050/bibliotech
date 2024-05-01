@@ -4,10 +4,12 @@ import com.example.appreactspring.exception.UserAlreadyExistsException;
 import com.example.appreactspring.model.Role;
 import com.example.appreactspring.model.User;
 import com.example.appreactspring.model.transport.UserResponseDTO;
+import com.example.appreactspring.model.transport.operation.create.CreateNotificationForm;
 import com.example.appreactspring.model.transport.operation.create.CreateUserForm;
 import com.example.appreactspring.repository.RoleRepository;
 import com.example.appreactspring.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +26,13 @@ public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
+    private final RabbitTemplate rabbitTemplate;
+
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, RabbitTemplate rabbitTemplate) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Transactional
@@ -43,6 +48,9 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(form.password()));
         user.setEmail(form.email());
         user.setRoles(Set.of(basicRole));
+
+        CreateNotificationForm event = new CreateNotificationForm(user.getUsername(), user.getEmail());
+        rabbitTemplate.convertAndSend("orders.v1.order-created", "", event);
 
         this.userRepository.save(user);
         return new UserResponseDTO(user);
