@@ -17,6 +17,13 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: on-failure
     container_name: rabbitmq
     ports:
       - "5672:5672"
@@ -45,12 +52,14 @@ services:
         - public
   
   backend:
+    image: backend
     build: ./backend
     container_name: backend
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      rabbitmq:
+        condition: service_healthy
     networks:
       - public
       - private
@@ -58,14 +67,14 @@ services:
     cpus: "0.5"
 
   api-notification:
+    image: api-notification
     build: ./api-notification
     container_name: api-notification
     ports:
       - "8081:8081"
     depends_on:
-      - postgres
-      - rabbitmq
-      - backend
+      rabbitmq:
+        condition: service_healthy
     networks:
       - public
       - private
