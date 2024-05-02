@@ -2,8 +2,8 @@ package com.example.appreactspring.service;
 
 import com.example.appreactspring.model.Role;
 import com.example.appreactspring.model.User;
-import com.example.appreactspring.model.transport.LoginRequest;
-import com.example.appreactspring.model.transport.LoginResponse;
+import com.example.appreactspring.dto.LoginRequest;
+import com.example.appreactspring.dto.LoginResponse;
 import com.example.appreactspring.repository.UserRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

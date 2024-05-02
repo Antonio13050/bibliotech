@@ -1,4 +1,4 @@
-package com.example.appreactspring.model.transport;
+package com.example.appreactspring.dto;
 
 import com.example.appreactspring.model.Role;
 import com.example.appreactspring.model.User;

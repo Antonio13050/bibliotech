@@ -1,10 +1,11 @@
 package com.example.appreactspring.controller;
 
 import com.example.appreactspring.exception.UserAlreadyExistsException;
-import com.example.appreactspring.model.User;
-import com.example.appreactspring.model.transport.UserResponseDTO;
-import com.example.appreactspring.model.transport.operation.create.CreateUserForm;
-import com.example.appreactspring.service.UserService;
+import com.example.appreactspring.dto.UserResponseDTO;
+import com.example.appreactspring.service.validation.EmailValidator;
+import com.example.appreactspring.service.validation.UsernameValidator;
+import com.example.appreactspring.transport.operation.create.CreateUserForm;
+import com.example.appreactspring.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +20,13 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final EmailValidator emailValidator;
+    private final UsernameValidator usernameValidator;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EmailValidator emailValidator, UsernameValidator usernameValidator) {
         this.userService = userService;
+        this.emailValidator = emailValidator;
+        this.usernameValidator = usernameValidator;
     }
 
     @PostMapping
@@ -41,7 +46,7 @@ public class UserController {
     @RequestMapping(value = "/check-email/{email}", method = RequestMethod.HEAD)
     public ResponseEntity<Void> checkEmailExists(@PathVariable String email) {
         try {
-            userService.validateUniqueEmail(email);
+            emailValidator.validateUniqueEmail(email);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -52,7 +57,7 @@ public class UserController {
     @RequestMapping(value = "/check-username/{username}", method = RequestMethod.HEAD)
     public ResponseEntity<Void> checkUsernameExists(@PathVariable String username) {
         try {
-            userService.validateUniqueUsername(username);
+            usernameValidator.validateUniqueUsername(username);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();

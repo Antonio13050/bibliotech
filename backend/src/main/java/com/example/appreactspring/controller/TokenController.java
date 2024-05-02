@@ -1,7 +1,7 @@
 package com.example.appreactspring.controller;
 
-import com.example.appreactspring.model.transport.LoginRequest;
-import com.example.appreactspring.model.transport.LoginResponse;
+import com.example.appreactspring.dto.LoginRequest;
+import com.example.appreactspring.dto.LoginResponse;
 import com.example.appreactspring.service.TokenService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
