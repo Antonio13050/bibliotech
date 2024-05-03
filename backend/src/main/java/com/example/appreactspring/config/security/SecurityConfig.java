@@ -1,4 +1,4 @@
-package com.example.appreactspring.config;
+package com.example.appreactspring.config.security;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;

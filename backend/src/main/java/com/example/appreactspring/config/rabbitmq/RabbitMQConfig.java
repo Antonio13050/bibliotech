@@ -1,4 +1,4 @@
-package com.example.appreactspring.config;
+package com.example.appreactspring.config.rabbitmq;
 
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
